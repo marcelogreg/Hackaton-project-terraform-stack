@@ -17,7 +17,7 @@ variable "project" {
 
 data "aws_vpc" "vpc" {
   tags = {
-    Name = "${var.project}"
+    Name = "${var.project}-${terraform.workspace}"
   }
 }
 
@@ -40,10 +40,9 @@ resource "random_shuffle" "random_subnet" {
 }
 
 
-
 resource "aws_elb" "web" {
-  name = "hackton-elb"
-
+#  name = "hackton-elb"
+   name = "hackton-elb-${terraform.workspace}"
   subnets         = data.aws_subnet_ids.all.ids
   security_groups = ["${aws_security_group.allow-ssh.id}"]
 
@@ -96,6 +95,6 @@ resource "aws_instance" "web" {
   }
 
   tags = {
-    Name = "${format("nginx-hackaton-%03d", count.index + 1)}"
+    Name = "${format("nginx-hackaton-%03d", count.index + 1)}-${terraform.workspace}"
   }
 }
